@@ -1,8 +1,7 @@
 # XReSign 
-XReSign - developer tool to sign or resign iDevice app (.ipa) files with a digital certificate from Apple for development or distribution.
+XReSign allows you to sign or resign unencrypted ipa-files with certificate for which you hold the corresponding private key. 
 
 ## How to use
-XReSign allows you to sign or resign unencrypted ipa-files with certificate for which you hold the corresponding private key. 
 
 ### GUI application
 ![Screenshot](https://github.com/xndrs/XreSign/blob/master/screenshot/screenshot.png)
@@ -21,4 +20,4 @@ where:
 -b  Bundle identifier (Optional)
 ```
 ## Acknowledgments
-Inspired by such great tool as iReSign and other command line scripts to resign the ipa files. Unfortunately a lot of them not supported today. So this is an attempt to support resign the latest app bundle components both through the GUI application and through the command line script.
+Inspired by such great tool as iReSign and other command line scripts to resign the ipa files. Unfortunately a lot of them not supported today. So this is an attempt to support resign the app bundle components both through the GUI application and through the command line script.
