@@ -40,11 +40,6 @@ do
     esac
 done
 
-echo "SOURCEIPA: " $SOURCEIPA
-echo "DEVELOPER: " $DEVELOPER
-echo "MOBILEPROV: " $MOBILEPROV
-echo "BUNDLEID: " $BUNDLEID
-
 
 echo "Start resign the app..."
 
@@ -84,7 +79,7 @@ find -d $APPDIR  \( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -
 
 var=$((0))
 while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$BUNDLEID" != 'null.null' ]] && [[ "$line" == *".appex"* ]]; then
+	if [[ ! -z "${BUNDLEID}" ]] && [[ "$line" == *".appex"* ]]; then
 	   echo "Changing .appex BundleID with : $BUNDLEID.extra$var"
 	   /usr/libexec/PlistBuddy -c "Set:CFBundleIdentifier $BUNDLEID.extra$var" "$line/Info.plist"
 	   var=$((var+1))
