@@ -1,7 +1,7 @@
 # !/bin/bash
 
 #
-#  AppDelegate.swift
+#  entitlements.sh
 #  XReSign
 #
 #  Copyright © 2017 xndrs. All rights reserved.
