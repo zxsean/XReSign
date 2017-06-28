@@ -1,5 +1,5 @@
 # XReSign 
-XReSign allows you to sign or resign unencrypted ipa-files with certificate for which you hold the corresponding private key. 
+XReSign allows you to sign or resign unencrypted ipa-files with certificate for which you hold the corresponding private key. Checked for developer, ad-hoc and enterprise distribution. 
 
 ## How to use
 
