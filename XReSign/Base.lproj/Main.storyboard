@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -19,6 +19,28 @@
                                         <menuItem title="Quit XReSign" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Edit" id="dEN-9s-ElN">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Edit" id="xUv-xH-PEf">
+                                    <items>
+                                        <menuItem title="Cut" keyEquivalent="x" id="Z8V-Iu-eHL">
+                                            <connections>
+                                                <action selector="cut:" target="Ady-hI-5gd" id="geN-1f-aTR"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Copy" keyEquivalent="c" id="Fj2-rn-BiH">
+                                            <connections>
+                                                <action selector="copy:" target="Ady-hI-5gd" id="fKG-ft-Kml"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Paste" keyEquivalent="v" id="xdS-Ul-mVr">
+                                            <connections>
+                                                <action selector="paste:" target="Ady-hI-5gd" id="kKE-rC-0mg"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -51,7 +73,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="74" y="363"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -139,7 +161,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" state="on" id="u7Y-Ib-GSL">
                                     <font key="font" metaFont="smallSystem"/>
-                                    <mutableString key="title">XReSign allows you to re-sign unencrypted ipa-file with certificate for which you hold the corresponding private key.
+                                    <string key="title">XReSign allows you to re-sign unencrypted ipa-file with certificate for which you hold the corresponding private key.
 
 1. Drag or browse your .ipa file to the top box.
 2. Drag or browse your provisioning profile to the second box. (Optional)
@@ -147,7 +169,7 @@
 4. Select signing certificate from Keychain Access in the bottom box.
 5. Click ReSign! The resigned file will be saved in the same folder as the original file.
 
-NOTE: Pay attention to the right pair between signing certificate and provisioning profile by app BundleId and scheme, like: develop, ad-hoc or enterprise.</mutableString>
+NOTE: Pay attention to the right pair between signing certificate and provisioning profile by app BundleId and scheme, like: develop, ad-hoc or enterprise.</string>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -181,7 +203,7 @@ NOTE: Pay attention to the right pair between signing certificate and provisioni
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="843"/>
+            <point key="canvasLocation" x="75" y="926"/>
         </scene>
     </scenes>
 </document>
