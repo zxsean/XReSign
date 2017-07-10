@@ -250,8 +250,11 @@ class ViewController: NSViewController {
         }
         
         tempDir = URL(fileURLWithPath: ipaPath).deletingLastPathComponent().path
+        tempDir?.append("/tmp")
+        if let path = tempDir {
+            try? FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+        }
 
-        
         // if there is a path to provisioning profile, check right pair with signing certificate
         if !provisioningPath.isEmpty {
             guard let organizationUnit = organizationUnitFromCertificate(by: commonName) else {

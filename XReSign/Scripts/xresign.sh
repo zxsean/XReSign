@@ -48,10 +48,10 @@ TMPDIR="$OUTDIR/tmp"
 APPDIR="$TMPDIR/app"
 
 
-mkdir -p $APPDIR
-unzip -qo "$SOURCEIPA" -d $APPDIR
+mkdir -p "$APPDIR"
+unzip -qo "$SOURCEIPA" -d "$APPDIR"
 
-APPLICATION=$(ls $APPDIR/Payload/)
+APPLICATION=$(ls "$APPDIR/Payload/")
 
 
 if [ -z "${MOBILEPROV}" ]; then
@@ -75,7 +75,7 @@ fi
 
 
 echo "Get list of components and resign with certificate: $DEVELOPER"
-find -d $APPDIR  \( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.dylib" \) > "$TMPDIR/components.txt"
+find -d "$APPDIR" \( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.dylib" \) > "$TMPDIR/components.txt"
 
 var=$((0))
 while IFS='' read -r line || [[ -n "$line" ]]; do
@@ -89,7 +89,7 @@ done < "$TMPDIR/components.txt"
 
 
 echo "Creating the signed ipa"
-cd $APPDIR
+cd "$APPDIR"
 filename=$(basename "$APPLICATION")
 filename="${filename%.*}-xresign.ipa"
 zip -qr "../$filename" *
@@ -102,6 +102,5 @@ rm -rf "$APPDIR"
 rm "$TMPDIR/components.txt"
 rm "$TMPDIR/provisioning.plist"
 rm "$TMPDIR/entitlements.plist"
-
 
 echo "XReSign FINISHED"
