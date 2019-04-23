@@ -94,7 +94,7 @@ filename=$(basename "$APPLICATION")
 filename="${filename%.*}-xresign.ipa"
 zip -qr "../$filename" *
 cd ..
-mv $filename "$OUTDIR"
+mv "$filename" "$OUTDIR"
 
 
 echo "Clear temporary files"
