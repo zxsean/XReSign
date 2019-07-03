@@ -62,7 +62,7 @@
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="XReSign" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="500" height="400"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
@@ -82,40 +82,75 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="XReSign" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="500" height="374"/>
+                    <view key="view" wantsLayer="YES" misplaced="YES" id="m2S-Jp-Qdl">
+                        <rect key="frame" x="0.0" y="0.0" width="650" height="338"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XkL-x1-6qe">
-                                <rect key="frame" x="20" y="332" width="330" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="XkL-x1-6qe">
+                                <rect key="frame" x="20" y="296" width="480" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="/path/to/app.ipa" drawsBackground="YES" id="TSd-EA-bto">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8xf-DI-m2E">
-                                <rect key="frame" x="20" y="300" width="330" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x1o-yN-0rT">
+                                <rect key="frame" x="504" y="289" width="132" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="Auk-WW-0l7"/>
+                                </constraints>
+                                <buttonCell key="cell" type="push" title="Browse" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mga-9k-7A2">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="actionBrowseIpa:" target="XfG-lQ-9wD" id="Bj2-gR-l1Q"/>
+                                </connections>
+                            </button>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8xf-DI-m2E">
+                                <rect key="frame" x="20" y="264" width="480" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="/path/to/.mobileprovision" drawsBackground="YES" id="ooN-Cb-ZR5">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qFl-Kj-XdJ">
-                                <rect key="frame" x="20" y="268" width="330" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4h3-oA-S8M">
+                                <rect key="frame" x="504" y="258" width="132" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="sf5-x6-ojc"/>
+                                </constraints>
+                                <buttonCell key="cell" type="push" title="Browse" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5cc-FH-BfR">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="actionBrowseProvisioning:" target="XfG-lQ-9wD" id="8oZ-EF-mmF"/>
+                                </connections>
+                            </button>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qFl-Kj-XdJ">
+                                <rect key="frame" x="20" y="232" width="480" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="com.domainname.appname" drawsBackground="YES" id="IqD-PM-V4p">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AkN-A2-oPi">
-                                <rect key="frame" x="20" y="234" width="463" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="L8Z-Cw-Sk6">
+                                <rect key="frame" x="508" y="234" width="124" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="L84-04-7mC"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Change BundleId" bezelStyle="regularSquare" imagePosition="left" inset="2" id="gsD-ZV-8fu">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="actionChangeBundleId:" target="XfG-lQ-9wD" id="v8W-ac-GXs"/>
+                                </connections>
+                            </button>
+                            <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AkN-A2-oPi">
+                                <rect key="frame" x="20" y="198" width="613" height="26"/>
                                 <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Select a signing certificate" drawsBackground="YES" completes="NO" usesDataSource="YES" numberOfVisibleItems="5" id="EZi-Ba-yQ6">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -126,60 +161,11 @@
                                     <outlet property="delegate" destination="XfG-lQ-9wD" id="Vge-kZ-Teb"/>
                                 </connections>
                             </comboBox>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="x1o-yN-0rT">
-                                <rect key="frame" x="352" y="326" width="134" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Browse" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mga-9k-7A2">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="actionBrowseIpa:" target="XfG-lQ-9wD" id="Bj2-gR-l1Q"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4h3-oA-S8M">
-                                <rect key="frame" x="352" y="294" width="134" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Browse" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5cc-FH-BfR">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="actionBrowseProvisioning:" target="XfG-lQ-9wD" id="8oZ-EF-mmF"/>
-                                </connections>
-                            </button>
-                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L8Z-Cw-Sk6">
-                                <rect key="frame" x="356" y="270" width="126" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Change BundleId" bezelStyle="regularSquare" imagePosition="left" inset="2" id="gsD-ZV-8fu">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="actionChangeBundleId:" target="XfG-lQ-9wD" id="v8W-ac-GXs"/>
-                                </connections>
-                            </button>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P5e-eD-aVW">
-                                <rect key="frame" x="19" y="20" width="463" height="161"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" state="on" id="u7Y-Ib-GSL">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <string key="title">XReSign allows you to re-sign unencrypted ipa-file with certificate for which you hold the corresponding private key.
-
-1. Drag or browse your .ipa file to the top box.
-2. Drag or browse your provisioning profile to the second box. (Optional)
-3. In the third box your can change app bundle identifier. (Optional)
-4. Select signing certificate from Keychain Access in the bottom box.
-5. Click ReSign! The resigned file will be saved in the same folder as the original file.
-
-NOTE: Pay attention to the right pair between signing certificate and provisioning profile by app BundleId and scheme, like: develop, ad-hoc or enterprise.</string>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bTt-3S-He8">
-                                <rect key="frame" x="405" y="190" width="81" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bTt-3S-He8">
+                                <rect key="frame" x="544" y="154" width="92" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="sUV-XJ-Umi"/>
+                                </constraints>
                                 <buttonCell key="cell" type="push" title="ReSign" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aCx-6C-Rzf">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -188,11 +174,57 @@ NOTE: Pay attention to the right pair between signing certificate and provisioni
                                     <action selector="actionSign:" target="XfG-lQ-9wD" id="nSv-fR-57j"/>
                                 </connections>
                             </button>
-                            <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="bX5-ZQ-r0Z">
-                                <rect key="frame" x="387" y="200" width="16" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="bX5-ZQ-r0Z">
+                                <rect key="frame" x="519" y="164" width="16" height="16"/>
                             </progressIndicator>
+                            <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P5e-eD-aVW">
+                                <rect key="frame" x="18" y="20" width="614" height="126"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" state="on" id="u7Y-Ib-GSL">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <mutableString key="title">XReSign allows you to re-sign unencrypted ipa-file with certificate for which you hold the corresponding private key.
+
+1. Drag or browse your .ipa file to the top box.
+2. Drag or browse your provisioning profile to the second box. (Optional)
+3. In the third box your can change app bundle identifier. (Optional)
+4. Select signing certificate from Keychain Access in the bottom box.
+5. Click ReSign! The resigned file will be saved in the same folder as the original file.
+
+NOTE: Pay attention to the right pair between signing certificate and provisioning profile.</mutableString>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <mutableString key="userLabel">XReSign allows you to re-sign unencrypted ipa-file with certificate for which you hold the corresponding private key.  1. Drag or browse your .ipa file to the top box. 2. Drag or browse your provisioning profile to the second box. (Optional) 3. In the third box your can change app bundle identifier. (Optional) 4. Select signing certificate from Keychain Access in the bottom box. 5. Click ReSign! The resigned file will be saved in the same folder as the original file.  NOTE: Pay attention to the right pair between signing certificate and provisioning profile by app BundleId and scheme, like: develop, ad-hoc or enterprise.</mutableString>
+                            </textField>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="bX5-ZQ-r0Z" firstAttribute="centerY" secondItem="bTt-3S-He8" secondAttribute="centerY" id="06O-NR-lHr"/>
+                            <constraint firstItem="qFl-Kj-XdJ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="1Di-4x-mqT"/>
+                            <constraint firstAttribute="bottom" secondItem="P5e-eD-aVW" secondAttribute="bottom" constant="20" id="35L-S7-RQ5"/>
+                            <constraint firstItem="XkL-x1-6qe" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="7LH-o2-2Un"/>
+                            <constraint firstItem="qFl-Kj-XdJ" firstAttribute="top" secondItem="8xf-DI-m2E" secondAttribute="bottom" constant="10" id="8Sg-zL-qSx"/>
+                            <constraint firstItem="P5e-eD-aVW" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="C7t-Sp-7yr"/>
+                            <constraint firstItem="8xf-DI-m2E" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="EnA-7C-nn5"/>
+                            <constraint firstItem="x1o-yN-0rT" firstAttribute="leading" secondItem="XkL-x1-6qe" secondAttribute="trailing" constant="10" id="Er2-q6-dRg"/>
+                            <constraint firstAttribute="trailing" secondItem="AkN-A2-oPi" secondAttribute="trailing" constant="20" id="Gre-Hk-WAh"/>
+                            <constraint firstItem="XkL-x1-6qe" firstAttribute="centerY" secondItem="x1o-yN-0rT" secondAttribute="centerY" id="IEU-D0-yta"/>
+                            <constraint firstItem="AkN-A2-oPi" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="IOZ-V8-3F0"/>
+                            <constraint firstAttribute="trailing" secondItem="bTt-3S-He8" secondAttribute="trailing" constant="20" id="JKK-a4-BJT"/>
+                            <constraint firstItem="L8Z-Cw-Sk6" firstAttribute="top" secondItem="4h3-oA-S8M" secondAttribute="bottom" constant="15" id="PP4-u1-5f7"/>
+                            <constraint firstAttribute="trailing" secondItem="L8Z-Cw-Sk6" secondAttribute="trailing" constant="20" id="S2Y-ar-OL9"/>
+                            <constraint firstItem="8xf-DI-m2E" firstAttribute="top" secondItem="XkL-x1-6qe" secondAttribute="bottom" constant="10" id="Uwm-o0-GtJ"/>
+                            <constraint firstItem="P5e-eD-aVW" firstAttribute="top" secondItem="bTt-3S-He8" secondAttribute="bottom" constant="15" id="Xi4-gi-FLu"/>
+                            <constraint firstItem="4h3-oA-S8M" firstAttribute="leading" secondItem="8xf-DI-m2E" secondAttribute="trailing" constant="10" id="ZLP-P8-SPR"/>
+                            <constraint firstItem="4h3-oA-S8M" firstAttribute="top" secondItem="x1o-yN-0rT" secondAttribute="bottom" constant="10" id="aNi-Mx-o1j"/>
+                            <constraint firstItem="bTt-3S-He8" firstAttribute="top" secondItem="AkN-A2-oPi" secondAttribute="bottom" constant="20" id="ad3-74-HQF"/>
+                            <constraint firstItem="AkN-A2-oPi" firstAttribute="top" secondItem="qFl-Kj-XdJ" secondAttribute="bottom" constant="10" id="lSC-Nc-hca"/>
+                            <constraint firstAttribute="trailing" secondItem="4h3-oA-S8M" secondAttribute="trailing" constant="20" id="n4h-uI-p9q"/>
+                            <constraint firstItem="bTt-3S-He8" firstAttribute="leading" secondItem="bX5-ZQ-r0Z" secondAttribute="trailing" constant="15" id="nZE-MU-qeF"/>
+                            <constraint firstItem="x1o-yN-0rT" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="oP1-R1-2cj"/>
+                            <constraint firstAttribute="trailing" secondItem="x1o-yN-0rT" secondAttribute="trailing" constant="20" id="pjC-j0-khz"/>
+                            <constraint firstItem="XkL-x1-6qe" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="rFN-Lu-aFX"/>
+                            <constraint firstAttribute="trailing" secondItem="P5e-eD-aVW" secondAttribute="trailing" constant="20" id="yhE-W6-ZgC"/>
+                            <constraint firstItem="L8Z-Cw-Sk6" firstAttribute="leading" secondItem="qFl-Kj-XdJ" secondAttribute="trailing" constant="10" id="ysz-ct-odi"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="buttonChangeBundleId" destination="L8Z-Cw-Sk6" id="VgM-ey-aPu"/>
@@ -206,7 +238,7 @@ NOTE: Pay attention to the right pair between signing certificate and provisioni
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="926"/>
+            <point key="canvasLocation" x="74" y="947"/>
         </scene>
     </scenes>
 </document>
