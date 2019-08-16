@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  XReSign
 //
-//  Copyright © 2017 xndrs. All rights reserved.
+//  Copyright © 2019 xndrs. All rights reserved.
 //
 
 import Cocoa
@@ -12,12 +12,14 @@ class ViewController: NSViewController {
     @IBOutlet weak var textFieldIpaPath: NSTextField!
     @IBOutlet weak var textFieldProvisioningPath: NSTextField!
     @IBOutlet weak var textFieldBundleId: NSTextField!
+    @IBOutlet weak var comboBoxKeychains: NSComboBox!
     @IBOutlet weak var comboBoxCertificates: NSComboBox!
     @IBOutlet weak var buttonChangeBundleId: NSButton!
     @IBOutlet weak var buttonResign: NSButton!
     @IBOutlet weak var progressIndicator: NSProgressIndicator!
     
-    fileprivate var certificates:[String] = []
+    fileprivate var certificates: [String] = []
+    fileprivate var keychains: [String : String] = [:]
     fileprivate var tempDir: String?
     
 
@@ -25,7 +27,7 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.loadCertificates()
+        loadKeychains()
     }
 
     override var representedObject: Any? {
@@ -34,25 +36,58 @@ class ViewController: NSViewController {
         }
     }
 
-
+    // MARK:- Keychains
+    
+    private func loadKeychains() {
+        DispatchQueue.global().async {
+            let task:Process = Process()
+            let pipe:Pipe = Pipe()
+            
+            task.launchPath = "/usr/bin/security"
+            task.arguments = ["list-keychains"]
+            task.standardOutput = pipe
+            task.standardError = pipe
+            
+            let handle = pipe.fileHandleForReading
+            task.launch()
+            self.parseKeychainsFrom(data: handle.readDataToEndOfFile())
+        }
+    }
+    
+    private func parseKeychainsFrom(data: Data) {
+        let buffer = String(data: data, encoding: String.Encoding.utf8)!
+        var map: [String : String] = [:]
+        let characterSet = NSMutableCharacterSet.whitespace()
+        characterSet.addCharacters(in: "\"")
+        
+        buffer.enumerateLines { (line, _) in
+            let trimmed = line.trimmingCharacters(in: characterSet as CharacterSet)
+            let name = (trimmed as NSString).lastPathComponent
+            map[name] = trimmed
+        }
+        
+        DispatchQueue.main.sync {
+            self.keychains = map
+            self.comboBoxKeychains.reloadData()
+        }
+    }
+    
     // MARK: - Certificates
-
-    private func loadCertificates() {
+    
+    private func loadCertificatesFromKeychain(_ keychain: String) {
         DispatchQueue.global().async {
 
             let task:Process = Process()
             let pipe:Pipe = Pipe()
             
             task.launchPath = "/usr/bin/security"
-            task.arguments = ["find-identity", "-v", "-p", "codesigning"]
+            task.arguments = ["find-identity", "-v", "-p", "codesigning", keychain]
             task.standardOutput = pipe
             task.standardError = pipe
             
             let handle = pipe.fileHandleForReading
             task.launch()
-
-            let data = handle.readDataToEndOfFile()
-            self.parseCertificatesFrom(data: data)
+            self.parseCertificatesFrom(data: handle.readDataToEndOfFile())
         }
     }
     
@@ -74,6 +109,7 @@ class ViewController: NSViewController {
         DispatchQueue.main.sync {
             self.certificates.removeAll()
             self.certificates.append(contentsOf: names)
+            self.comboBoxCertificates.deselectItem(at: self.comboBoxCertificates.indexOfSelectedItem)
             self.comboBoxCertificates.reloadData()
         }
     }
@@ -295,7 +331,11 @@ class ViewController: NSViewController {
         alert.informativeText = message
         alert.alertStyle = style
         alert.addButton(withTitle: "Close")
-        alert.beginSheetModal(for: NSApp.keyWindow!, completionHandler: nil)
+        if let window = NSApp.keyWindow {
+            alert.beginSheetModal(for: window, completionHandler: nil)
+        } else {
+            alert.runModal()
+        }
     }
 }
 
@@ -303,6 +343,13 @@ class ViewController: NSViewController {
 // MARK: - NSComboBoxDelegate
 
 extension ViewController: NSComboBoxDelegate {
+    
+    func comboBoxSelectionDidChange(_ notification: Notification) {
+        if let comboBox = notification.object as? NSComboBox, comboBox === self.comboBoxKeychains {
+            guard comboBox.indexOfSelectedItem < keychains.count else { return }
+            loadCertificatesFromKeychain(Array(keychains.values)[comboBox.indexOfSelectedItem])
+        }
+    }
 }
 
 
@@ -311,10 +358,20 @@ extension ViewController: NSComboBoxDelegate {
 extension ViewController: NSComboBoxDataSource {
     
     func numberOfItems(in comboBox: NSComboBox) -> Int {
-        return certificates.count
+        if comboBox === self.comboBoxKeychains {
+            return keychains.count
+        } else if comboBox === self.comboBoxCertificates {
+            return certificates.count
+        }
+        return 0
     }
     
     func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
-        return certificates[index]
+        if comboBox === self.comboBoxKeychains {
+            return Array(keychains.keys)[index]
+        } else if comboBox === self.comboBoxCertificates {
+            return certificates[index]
+        }
+        return nil
     }
 }
