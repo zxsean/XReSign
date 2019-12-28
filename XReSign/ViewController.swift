@@ -9,6 +9,8 @@ import Cocoa
 
 
 class ViewController: NSViewController {
+    let kLastProvisioningPathKey = "kLastProvisioningPathKey"
+    
     @IBOutlet weak var textFieldIpaPath: NSTextField!
     @IBOutlet weak var textFieldProvisioningPath: NSTextField!
     @IBOutlet weak var textFieldBundleId: NSTextField!
@@ -27,6 +29,9 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let defaultProvisioning = UserDefaults.standard.string(forKey: kLastProvisioningPathKey) {
+            textFieldProvisioningPath.stringValue = defaultProvisioning
+        }
         loadKeychains()
     }
 
@@ -69,6 +74,13 @@ class ViewController: NSViewController {
         DispatchQueue.main.sync {
             self.keychains = map
             self.comboBoxKeychains.reloadData()
+            //load default for login.keychain-db
+            map.enumerated().forEach { arg0 in
+                let (offset, (key, _)) = arg0
+                if key.localizedStandardContains("login.") {
+                    self.comboBoxKeychains.selectItem(at: offset)
+                }
+            }
         }
     }
     
@@ -299,7 +311,12 @@ class ViewController: NSViewController {
                               style: .critical)
                 return
             }
-            
+            if !FileManager.default.fileExists(atPath: provisioningPath) {
+                showAlertWith(title: nil,
+                message: "Provisioning not exists!",
+                style: .critical)
+                return
+            }
             guard let teamIdentifier = teamIdentifierFromProvisioning(path: provisioningPath) else {
                 showAlertWith(title: nil,
                               message: "Can not retrieve team identifier from provisioning profile",
@@ -318,7 +335,7 @@ class ViewController: NSViewController {
                 return
             }
         }
-        
+        UserDefaults.standard.setValue(provisioningPath, forKey: kLastProvisioningPathKey)
         signIpaWith(path: ipaPath, developer: commonName, provisioning: provisioningPath, bundle: bundleId)
     }
     
