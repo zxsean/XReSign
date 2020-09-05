@@ -7,23 +7,24 @@
 
 import Cocoa
 
-
 class ViewController: NSViewController {
     let kLastProvisioningPathKey = "kLastProvisioningPathKey"
-    
-    @IBOutlet weak var textFieldIpaPath: NSTextField!
-    @IBOutlet weak var textFieldProvisioningPath: NSTextField!
-    @IBOutlet weak var textFieldBundleId: NSTextField!
-    @IBOutlet weak var comboBoxKeychains: NSComboBox!
-    @IBOutlet weak var comboBoxCertificates: NSComboBox!
-    @IBOutlet weak var buttonChangeBundleId: NSButton!
-    @IBOutlet weak var buttonResign: NSButton!
-    @IBOutlet weak var progressIndicator: NSProgressIndicator!
-    
+    let kEntitlementsPathKey = "kEntitlementsPathKey"
+
+    @IBOutlet var textFieldIpaPath: NSTextField!
+    @IBOutlet var textFieldProvisioningPath: NSTextField!
+    @IBOutlet var textFieldEntitlementsPath: NSTextField!
+
+    @IBOutlet var textFieldBundleId: NSTextField!
+    @IBOutlet var comboBoxKeychains: NSComboBox!
+    @IBOutlet var comboBoxCertificates: NSComboBox!
+    @IBOutlet var buttonChangeBundleId: NSButton!
+    @IBOutlet var buttonResign: NSButton!
+    @IBOutlet var progressIndicator: NSProgressIndicator!
+
     fileprivate var certificates: [String] = []
-    fileprivate var keychains: [String : String] = [:]
+    fileprivate var keychains: [String: String] = [:]
     fileprivate var tempDir: String?
-    
 
     // MARK: - Main
 
@@ -32,49 +33,52 @@ class ViewController: NSViewController {
         if let defaultProvisioning = UserDefaults.standard.string(forKey: kLastProvisioningPathKey) {
             textFieldProvisioningPath.stringValue = defaultProvisioning
         }
+        if let defaultEntitlements = UserDefaults.standard.string(forKey: kEntitlementsPathKey) {
+            textFieldEntitlementsPath.stringValue = defaultEntitlements
+        }
         loadKeychains()
     }
 
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
     }
 
-    // MARK:- Keychains
-    
+    // MARK: - Keychains
+
     private func loadKeychains() {
         DispatchQueue.global().async {
-            let task:Process = Process()
-            let pipe:Pipe = Pipe()
-            
+            let task: Process = Process()
+            let pipe: Pipe = Pipe()
+
             task.launchPath = "/usr/bin/security"
             task.arguments = ["list-keychains"]
             task.standardOutput = pipe
             task.standardError = pipe
-            
+
             let handle = pipe.fileHandleForReading
             task.launch()
             self.parseKeychainsFrom(data: handle.readDataToEndOfFile())
         }
     }
-    
+
     private func parseKeychainsFrom(data: Data) {
         let buffer = String(data: data, encoding: String.Encoding.utf8)!
-        var map: [String : String] = [:]
+        var map: [String: String] = [:]
         let characterSet = NSMutableCharacterSet.whitespace()
         characterSet.addCharacters(in: "\"")
-        
-        buffer.enumerateLines { (line, _) in
+
+        buffer.enumerateLines { line, _ in
             let trimmed = line.trimmingCharacters(in: characterSet as CharacterSet)
             let name = (trimmed as NSString).lastPathComponent
             map[name] = trimmed
         }
-        
+
         DispatchQueue.main.sync {
             self.keychains = map
             self.comboBoxKeychains.reloadData()
-            //load default for login.keychain-db
+            // load default for login.keychain-db
             map.enumerated().forEach { arg0 in
                 let (offset, (key, _)) = arg0
                 if key.localizedStandardContains("login.") {
@@ -83,31 +87,30 @@ class ViewController: NSViewController {
             }
         }
     }
-    
+
     // MARK: - Certificates
-    
+
     private func loadCertificatesFromKeychain(_ keychain: String) {
         DispatchQueue.global().async {
+            let task: Process = Process()
+            let pipe: Pipe = Pipe()
 
-            let task:Process = Process()
-            let pipe:Pipe = Pipe()
-            
             task.launchPath = "/usr/bin/security"
             task.arguments = ["find-identity", "-v", "-p", "codesigning", keychain]
             task.standardOutput = pipe
             task.standardError = pipe
-            
+
             let handle = pipe.fileHandleForReading
             task.launch()
             self.parseCertificatesFrom(data: handle.readDataToEndOfFile())
         }
     }
-    
+
     private func parseCertificatesFrom(data: Data) {
         let buffer = String(data: data, encoding: String.Encoding.utf8)!
-        var names:[String] = []
+        var names: [String] = []
 
-        buffer.enumerateLines { (line, _) in
+        buffer.enumerateLines { line, _ in
             // default output line format for security command:
             // 1) E00D4E3D3272ABB655CDE0C1CF53891210BAF4B8 "iPhone Developer: XXXXXXXXXX (YYYYYYYYYY)"
             let components = line.components(separatedBy: "\"")
@@ -116,7 +119,7 @@ class ViewController: NSViewController {
                 names.append(commonName)
             }
         }
-        
+
         names.sort(by: { $0 < $1 })
         DispatchQueue.main.sync {
             self.certificates.removeAll()
@@ -125,30 +128,29 @@ class ViewController: NSViewController {
             self.comboBoxCertificates.reloadData()
         }
     }
-    
+
     private func organizationUnitFromCertificate(by name: String) -> String? {
         let query: [String: Any] = [kSecClass as String: kSecClassCertificate,
                                     kSecAttrLabel as String: name,
                                     kSecReturnRef as String: kCFBooleanTrue!]
-        
+
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         guard status == errSecSuccess else {
             return nil
         }
         let certificate = item as! SecCertificate
-        
+
         let keys = [kSecOIDX509V1SubjectName] as CFArray
         guard let subjectValue = SecCertificateCopyValues(certificate, keys, nil) else {
             return nil
         }
 
-        if let subjectDict = subjectValue as? [String : Any] {
-            let rootDict = subjectDict["\(kSecOIDX509V1SubjectName)"] as? [String : Any]
+        if let subjectDict = subjectValue as? [String: Any] {
+            let rootDict = subjectDict["\(kSecOIDX509V1SubjectName)"] as? [String: Any]
             if let values = rootDict?["value"] as? [Any] {
                 for value in values {
-                    if let dict = value as? [String : Any] {
-        
+                    if let dict = value as? [String: Any] {
                         if let label = dict["label"] as? String, let value = dict["value"] as? String {
                             if label.compare("\(kSecOIDOrganizationalUnitName)") == .orderedSame {
                                 return value
@@ -160,20 +162,20 @@ class ViewController: NSViewController {
         }
         return nil
     }
-    
+
     private func teamIdentifierFromProvisioning(path provisioningPath: String) -> String? {
         guard let launchPath = Bundle.main.path(forResource: "entitlements", ofType: "sh") else {
             showAlertWith(title: nil, message: "Can not find entitlements script to run", style: .critical)
             return nil
         }
-        
-        guard let _  = tempDir else {
+
+        guard let _ = tempDir else {
             showAlertWith(title: nil, message: "Internal error. No temporary directory for script.", style: .critical)
             return nil
         }
 
-        let task:Process = Process()
-        let pipe:Pipe = Pipe()
+        let task: Process = Process()
+        let pipe: Pipe = Pipe()
 
         task.launchPath = "/bin/sh"
         task.arguments = [launchPath, provisioningPath, tempDir!]
@@ -199,7 +201,7 @@ class ViewController: NSViewController {
         return nil
     }
 
-    private func signIpaWith(path ipaPath: String, developer: String, provisioning: String, bundle: String?) {
+    private func signIpaWith(path ipaPath: String, developer: String, provisioning: String, bundle: String?, entitlementsPath: String?) {
         guard let launchPath = Bundle.main.path(forResource: "xresign", ofType: "sh") else {
             showAlertWith(title: nil, message: "Can not find resign script to run", style: .critical)
             return
@@ -208,43 +210,41 @@ class ViewController: NSViewController {
         buttonResign.isEnabled = false
         progressIndicator.isHidden = false
         progressIndicator.startAnimation(nil)
-        
+
         DispatchQueue.global().async {
-            let task:Process = Process()
-            let pipe:Pipe = Pipe()
-            
+            let task: Process = Process()
+            let pipe: Pipe = Pipe()
+
             task.launchPath = "/bin/sh"
-            task.arguments = [launchPath, "-s", ipaPath, "-c", developer, "-p", provisioning, "-b", bundle ?? ""]
+            task.arguments = [launchPath, "-s", ipaPath, "-c", developer, "-p", provisioning, "-b", bundle ?? "", "-e", entitlementsPath ?? ""]
             task.standardOutput = pipe
             task.standardError = pipe
-            
+
             let handle = pipe.fileHandleForReading
             task.launch()
-            
+
             let data = handle.readDataToEndOfFile()
             let buffer = String(data: data, encoding: String.Encoding.utf8)!
-            print ("\(buffer)")
-            
+            print("\(buffer)")
+
             var success = false
             if let _ = buffer.range(of: "XReSign FINISHED") {
                 success = true
             }
-            
+
             DispatchQueue.main.async {
                 self.buttonResign.isEnabled = true
                 self.progressIndicator.stopAnimation(nil)
                 self.progressIndicator.isHidden = true
-                
+
                 if success {
                     self.showAlertWith(title: nil, message: "Re-sign finished", style: .informational)
-                }
-                else {
+                } else {
                     self.showAlertWith(title: nil, message: "Failed to re-sign the app", style: .critical)
                 }
             }
         }
     }
-
 
     // MARK: - Actions
 
@@ -261,7 +261,21 @@ class ViewController: NSViewController {
             }
         }
     }
-    
+
+    @IBAction func actionBrowsEntitlements(_ sender: Any) {
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.canCreateDirectories = false
+        openPanel.canChooseFiles = true
+        openPanel.allowedFileTypes = ["plist"]
+        openPanel.begin { (result) -> Void in
+            if result == .OK {
+                self.textFieldEntitlementsPath.stringValue = openPanel.url?.path ?? ""
+            }
+        }
+    }
+
     @IBAction func actionBrowseProvisioning(_ sender: Any) {
         let openPanel = NSOpenPanel()
         openPanel.allowsMultipleSelection = false
@@ -275,33 +289,45 @@ class ViewController: NSViewController {
             }
         }
     }
-    
+
     @IBAction func actionChangeBundleId(_ sender: Any) {
         textFieldBundleId.isEnabled = buttonChangeBundleId.state == .on
     }
-    
+
     @IBAction func actionSign(_ sender: Any) {
         let ipaPath = textFieldIpaPath.stringValue
         let provisioningPath = textFieldProvisioningPath.stringValue
-        let bundleId:String? = buttonChangeBundleId.state == .on ? textFieldBundleId.stringValue : nil
+        let entitlementsPath = textFieldEntitlementsPath.stringValue
+
+        let bundleId: String? = buttonChangeBundleId.state == .on ? textFieldBundleId.stringValue : nil
         let index = comboBoxCertificates.indexOfSelectedItem
-        let certificateName:String? = index >= 0 ? certificates[index] : nil
-        
+        let certificateName: String? = index >= 0 ? certificates[index] : nil
+
         if ipaPath.isEmpty {
             showAlertWith(title: nil, message: "IPA file not selected", style: .critical)
             return
         }
-        
+
         guard let commonName = certificateName else {
             showAlertWith(title: nil, message: "Signing certificate not selected", style: .critical)
             return
         }
-        
+
         tempDir = URL(fileURLWithPath: ipaPath).deletingLastPathComponent().path
         tempDir?.append("/tmp")
         if let path = tempDir {
             try? FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
         }
+
+        if !entitlementsPath.isEmpty {
+            if !FileManager.default.fileExists(atPath: entitlementsPath) {
+                showAlertWith(title: nil,
+                              message: "entitlements not exists!",
+                              style: .critical)
+                return
+            }
+        }
+        UserDefaults.standard.setValue(entitlementsPath, forKey: kEntitlementsPathKey)
 
         // if there is a path to provisioning profile, check right pair with signing certificate
         if !provisioningPath.isEmpty {
@@ -313,35 +339,35 @@ class ViewController: NSViewController {
             }
             if !FileManager.default.fileExists(atPath: provisioningPath) {
                 showAlertWith(title: nil,
-                message: "Provisioning not exists!",
-                style: .critical)
+                              message: "Provisioning not exists!",
+                              style: .critical)
                 return
             }
             guard let teamIdentifier = teamIdentifierFromProvisioning(path: provisioningPath) else {
                 showAlertWith(title: nil,
                               message: "Can not retrieve team identifier from provisioning profile",
-                    style: .critical)
+                              style: .critical)
                 return
             }
 
             if organizationUnit.compare(teamIdentifier) != .orderedSame {
                 showAlertWith(title: nil,
                               message: "There is a problem!\n" +
-                                        "Different team identifiers\n" +
-                                        "Provisioing team identifier: \(teamIdentifier)\n" +
-                                        "Certificate team identifier: \(organizationUnit)\n" +
-                                        "Check it and select the right pair.",
+                                  "Different team identifiers\n" +
+                                  "Provisioing team identifier: \(teamIdentifier)\n" +
+                                  "Certificate team identifier: \(organizationUnit)\n" +
+                                  "Check it and select the right pair.",
                               style: .critical)
                 return
             }
         }
+
         UserDefaults.standard.setValue(provisioningPath, forKey: kLastProvisioningPathKey)
-        signIpaWith(path: ipaPath, developer: commonName, provisioning: provisioningPath, bundle: bundleId)
+        signIpaWith(path: ipaPath, developer: commonName, provisioning: provisioningPath, bundle: bundleId, entitlementsPath: entitlementsPath)
     }
-    
-    
+
     // MARK: - Alert
-    
+
     private func showAlertWith(title: String?, message: String, style: NSAlert.Style) {
         let alert = NSAlert()
         alert.messageText = title ?? "XReSign"
@@ -356,37 +382,33 @@ class ViewController: NSViewController {
     }
 }
 
-
 // MARK: - NSComboBoxDelegate
 
 extension ViewController: NSComboBoxDelegate {
-    
     func comboBoxSelectionDidChange(_ notification: Notification) {
-        if let comboBox = notification.object as? NSComboBox, comboBox === self.comboBoxKeychains {
+        if let comboBox = notification.object as? NSComboBox, comboBox === comboBoxKeychains {
             guard comboBox.indexOfSelectedItem < keychains.count else { return }
             loadCertificatesFromKeychain(Array(keychains.values)[comboBox.indexOfSelectedItem])
         }
     }
 }
 
-
 // MARK: - NSComboBoxDataSource
 
 extension ViewController: NSComboBoxDataSource {
-    
     func numberOfItems(in comboBox: NSComboBox) -> Int {
-        if comboBox === self.comboBoxKeychains {
+        if comboBox === comboBoxKeychains {
             return keychains.count
-        } else if comboBox === self.comboBoxCertificates {
+        } else if comboBox === comboBoxCertificates {
             return certificates.count
         }
         return 0
     }
-    
+
     func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
-        if comboBox === self.comboBoxKeychains {
+        if comboBox === comboBoxKeychains {
             return Array(keychains.keys)[index]
-        } else if comboBox === self.comboBoxCertificates {
+        } else if comboBox === comboBoxCertificates {
             return certificates[index]
         }
         return nil

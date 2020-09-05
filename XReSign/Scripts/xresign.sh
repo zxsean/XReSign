@@ -8,22 +8,25 @@
 #
 
 usage="Usage example:
-$(basename "$0") -s path -c certificate [-p path] [-b identifier]
+$(basename "$0") -s path -c certificate [-e entitlements] [-p path] [-b identifier]
 
 where:
 -s  path to ipa file which you want to sign/resign
 -c  signing certificate Common Name from Keychain
+-e  New entitlements to change.
 -p  path to mobile provisioning file (Optional)
 -b  Bundle identifier (Optional)"
 
 
-while getopts s:c:p:b: option
+while getopts s:c:e:p:b: option
 do
     case "${option}"
     in
       s) SOURCEIPA=${OPTARG}
          ;;
       c) DEVELOPER=${OPTARG}
+         ;;
+      e) ENTITLEMENTS=${OPTARG}
          ;;
       p) MOBILEPROV=${OPTARG}
          ;;
@@ -62,9 +65,13 @@ else
 fi
 
 echo "Extract entitlements from mobileprovisioning"
-security cms -D -i "$APPDIR/Payload/$APPLICATION/embedded.mobileprovision" > "$TMPDIR/provisioning.plist"
-/usr/libexec/PlistBuddy -x -c 'Print:Entitlements' "$TMPDIR/provisioning.plist" > "$TMPDIR/entitlements.plist"
-
+if [ -z "${ENTITLEMENTS}" ]; then
+    security cms -D -i "$APPDIR/Payload/$APPLICATION/embedded.mobileprovision" > "$TMPDIR/provisioning.plist"
+  /usr/libexec/PlistBuddy -x -c 'Print:Entitlements' "$TMPDIR/provisioning.plist" > "$TMPDIR/entitlements.plist"
+else
+    cp ${ENTITLEMENTS} "$TMPDIR/entitlements.plist"
+    echo "${ENTITLEMENTS}"
+fi
 
 if [ -z "${BUNDLEID}" ]; then
     echo "Sign process using existing bundle identifier from payload"
