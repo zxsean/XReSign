@@ -322,7 +322,7 @@ class ViewController: NSViewController {
         if !entitlementsPath.isEmpty {
             if !FileManager.default.fileExists(atPath: entitlementsPath) {
                 showAlertWith(title: nil,
-                              message: "entitlements not exists!",
+                              message: "Entitlements not exists!",
                               style: .critical)
                 return
             }
