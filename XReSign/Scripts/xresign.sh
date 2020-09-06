@@ -13,7 +13,7 @@ $(basename "$0") -s path -c certificate [-e entitlements] [-p path] [-b identifi
 where:
 -s  path to ipa file which you want to sign/resign
 -c  signing certificate Common Name from Keychain
--e  new entitlements to change
+-e  new entitlements to change (Optional)
 -p  path to mobile provisioning file (Optional)
 -b  bundle identifier (Optional)"
 
